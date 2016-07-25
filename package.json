@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jason Kim",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/serv/framework-benchmarks.git"
+  },
+  "author": "Jason Kim <iamjsonkim@gmail.com> (http://jasonkim.ca/)",
   "license": "MIT"
 }
