@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Rails API test
+cd ./frameworks/rails_api_benchmark; rails s -d
+sleep 3
+
+wrk 'http://localhost:3000/benchmarks/hit' \
+  -d 3 \
+  -c 50 \
+  -t 8 \
+  | grep 'Requests/sec' \
+  | awk '{ print "  " $2 }'
+
+# to kill the server
+kill `cat tmp/pids/server.pid`
+
+# restify
+cd ..
+cd ./restify_benchmark; node index.js &
+pid=$!
+sleep 3
+
+wrk 'http://localhost:8080/benchmarks/hit' \
+  -d 3 \
+  -c 50 \
+  -t 8 \
+  | grep 'Requests/sec' \
+  | awk '{ print "  " $2 }'
+
+kill $pid
+
+# spark using java
+cd ..
+cd ./spark_benchmark/benchmarks-spark; java -jar target/benchmarks-spark-1.0-SNAPSHOT-jar-with-dependencies.jar &
+pid=$!
+sleep 3
+
+wrk 'http://localhost:4567/benchmarks/hit' \
+  -d 3 \
+  -c 50 \
+  -t 8 \
+  | grep 'Requests/sec' \
+  | awk '{ print "  " $2 }'
+
+kill $pid
