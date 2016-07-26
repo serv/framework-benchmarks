@@ -43,3 +43,19 @@ wrk 'http://localhost:4567/benchmarks/hit' \
   | awk '{ print "  " $2 }'
 
 kill $pid
+
+# go net/http
+echo 'go net/http'
+cd ../..
+cd ./go_net_http_benchmark; ./go_net_http_index &
+pid=$!
+sleep 3
+
+wrk 'http://localhost:8080/benchmarks/hit' \
+  -d 3 \
+  -c 50 \
+  -t 8 \
+  | grep 'Requests/sec' \
+  | awk '{ print "  " $2 }'
+
+kill $pid
