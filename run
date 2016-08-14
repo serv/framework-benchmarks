@@ -14,6 +14,25 @@ wrk 'http://localhost:3000/benchmarks/hit' \
 # to kill the server
 kill `cat tmp/pids/server.pid`
 
+# elixir phoenix
+# Ensure that postgresql is running in the background
+echo 'elixir phoenix'
+cd ..
+pwd
+
+cd ./phoenix_benchmark; mix phoenix.server > /dev/null 2>&1 &
+pid=$!
+sleep 5
+
+wrk 'http://localhost:4000/hit' \
+  -d 3 \
+  -c 50 \
+  -t 8 \
+  | grep 'Requests/sec' \
+  | awk '{ print "  " $2 }'
+
+kill $pid
+
 # restify
 cd ..
 cd ./restify_benchmark; node index.js &
